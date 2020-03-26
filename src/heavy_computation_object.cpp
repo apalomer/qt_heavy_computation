@@ -10,15 +10,13 @@ HeavyComputationObject* HeavyComputationObject::createHeavyComputationObjectInTh
   QThread* th = new QThread(thread_parent);
   HeavyComputationObject* heavy_comp_obj = new HeavyComputationObject;
   heavy_comp_obj->moveToThread(th);
+  connect(heavy_comp_obj, &QObject::objectNameChanged, th, &QThread::setObjectName);
   th->start();
   return heavy_comp_obj;
 }
 
 HeavyComputationObject::HeavyComputationObject(QObject* parent) : QObject(parent), cancelled_(false), is_busy_(false)
 {
-  connect(this, &QObject::objectNameChanged, this,
-          QOverload<const QString&>::of(&HeavyComputationObject::setThreadName));
-  setThreadName();
 }
 
 void HeavyComputationObject::connectProgress(QProgressDialog* progress)
@@ -92,18 +90,6 @@ void HeavyComputationObject::disconnectAllSavedConnections()
   for (auto connection : connections_)
     disconnect(connection);
   connections_.clear();
-}
-
-void HeavyComputationObject::setThreadName()
-{
-  setThreadName(objectName());
-}
-
-void HeavyComputationObject::setThreadName(const QString& name)
-{
-  mutex_.lock();
-  thread()->setObjectName(name + " trhead");
-  mutex_.unlock();
 }
 
 bool HeavyComputationObject::isBusy() const

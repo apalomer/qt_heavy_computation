@@ -32,8 +32,6 @@ public slots:
   void cancel();
 
 protected slots:
-  void setThreadName();
-  void setThreadName(const QString &name);
   void disconnectAllSavedConnections();
 
 protected:
