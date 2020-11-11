@@ -5,18 +5,21 @@
 #include <QThread>
 
 #include <thread>
-HeavyComputationObject* HeavyComputationObject::createHeavyComputationObjectInThread(QObject* thread_parent)
+HeavyComputationObject* HeavyComputationObject::createHeavyComputationObjectInThread(QThread* th)
 {
-  QThread* th = new QThread(thread_parent);
   HeavyComputationObject* heavy_comp_obj = new HeavyComputationObject;
   heavy_comp_obj->moveToThread(th);
-  connect(heavy_comp_obj, &QObject::objectNameChanged, th, &QThread::setObjectName);
-  th->start();
+  connect(th, &QThread::finished, heavy_comp_obj, &HeavyComputationObject::deleteLater);
   return heavy_comp_obj;
 }
 
 HeavyComputationObject::HeavyComputationObject(QObject* parent) : QObject(parent), cancelled_(false), is_busy_(false)
 {
+}
+
+HeavyComputationObject::~HeavyComputationObject()
+{
+  qDebug() << "Dleting heavy computation object: " << objectName();
 }
 
 void HeavyComputationObject::connectProgress(QProgressDialog* progress)

@@ -6,7 +6,7 @@ int main(int argc, char** argv)
 {
   QApplication app(argc, argv);
   app.setStyle(QStyleFactory::create("Fusion"));
-  HeavyComputationWidget* widget = new HeavyComputationWidget;
-  widget->show();
+  HeavyComputationWidget widget;
+  widget.show();
   return app.exec();
 }

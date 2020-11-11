@@ -9,9 +9,10 @@ class HeavyComputationObject : public QObject
 {
   Q_OBJECT
 public:
-  static HeavyComputationObject *createHeavyComputationObjectInThread(QObject *thread_parent);
+  static HeavyComputationObject *createHeavyComputationObjectInThread(QThread *thread);
 
   explicit HeavyComputationObject(QObject *parent = nullptr);
+  ~HeavyComputationObject();
 
   bool isBusy() const;
 signals:

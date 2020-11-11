@@ -43,6 +43,7 @@ private:
   QProgressDialog *createProgressDialog();
   Ui::HeavyComputationWidget *ui = nullptr;
 
+  QThread *thread_ = nullptr;
   HeavyComputationObject *worker_ = nullptr;
   HeavyComputationObject *concurrent_ = nullptr;
 };

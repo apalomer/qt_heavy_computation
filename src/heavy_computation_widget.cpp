@@ -18,8 +18,12 @@ HeavyComputationWidget::HeavyComputationWidget(QWidget* parent) : QWidget(parent
   connect(ui->concurrent_pushButton, &QPushButton::clicked, this,
           &HeavyComputationWidget::startHeavyComputationConcurrent);
 
+  // Create thread
+  thread_ = new QThread(this);
+  thread_->start();
+
   // Get worker ready
-  worker_ = HeavyComputationObject::createHeavyComputationObjectInThread(this);
+  worker_ = HeavyComputationObject::createHeavyComputationObjectInThread(thread_);
   worker_->setObjectName("Worker");
   connect(this, &HeavyComputationWidget::requestComputation, worker_,
           QOverload<int, QProgressDialog*>::of(&HeavyComputationObject::heavyComputation));
@@ -33,8 +37,9 @@ HeavyComputationWidget::HeavyComputationWidget(QWidget* parent) : QWidget(parent
 
 HeavyComputationWidget::~HeavyComputationWidget()
 {
+  thread_->quit();
+  thread_->wait();
   delete ui;
-  delete worker_;
 }
 
 void HeavyComputationWidget::startHeavyComputationInThread()
